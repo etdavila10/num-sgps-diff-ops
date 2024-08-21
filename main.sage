@@ -23,20 +23,23 @@ Create an initial generating set for the ring of differential operators
 for the numerical semigroup with generators S. Using Theorem A from the
 Eriksen paper
 Parameters: S (NumericalSemigroup) - a numerical semigroup
-Output: all_indices (List[Integer]) - a list capturing a generating set of D(k[S]),
+Output: gens_dict (Dict[Integer, List[Integer]]) - a list capturing a generating set of D(k[S]),
     the ring of differential operators over k[S].
 '''
 def initial_gen_set(S):
     indices = S.gens + S.Gaps()
     neg_indices = [-ele for ele in indices]
     all_indices = neg_indices + [0] + indices
-    return sorted(all_indices)
+    gens_dict = {}
+    for index in all_indices:
+        gens_dict[index] = extended_apery_set(S, -1*index)
+    return gens_dict
 
 '''
 Allows one to compute Apery sets for elements not in the numerical semigroup S
 '''
 def extended_apery_set(S, n):
-    if (S.Contains(n)):
+    if (S.Contains(n) and n != 0):
         return S.AperySet(n)
     else:
         # captures all elements, s, of S such that s - n < 0
